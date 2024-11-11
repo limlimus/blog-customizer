@@ -21,12 +21,6 @@ type Story = StoryObj<typeof meta>;
 export const Open: Story = {
 	/* Для React-компонентов args === props */
 	args: {
-		isOpen: true,
-	},
-};
-
-export const Close: Story = {
-	args: {
-		isOpen: false,
+		onChange: () => {},
 	},
 };

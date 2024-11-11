@@ -1,11 +1,12 @@
 import clsx from 'clsx';
-import { useState, useRef } from 'react';
+import { useState, useRef, SyntheticEvent } from 'react';
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
 import { Separator } from 'src/ui/separator';
 import { RadioGroup } from 'src/ui/radio-group';
 import { Select } from 'src/ui/select';
 import {
+	ArticleStateType,
 	backgroundColors,
 	contentWidthArr,
 	fontColors,
@@ -16,7 +17,12 @@ import {
 import styles from './ArticleParamsForm.module.scss';
 import { useOutsideClickClose } from '../../ui/select/hooks/useOutsideClickClose';
 import { Text } from 'src/ui/text';
-export const ArticleParamsForm = () => {
+
+type ArticleParamsFormProps = {
+	onChange: (state: ArticleStateType) => void;
+};
+
+export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	useOutsideClickClose({
@@ -46,12 +52,37 @@ export const ArticleParamsForm = () => {
 		[styles.container_open]: isOpen,
 	});
 
+	const handleSubmit = (event: SyntheticEvent) => {
+		event.preventDefault();
+		console.log('Form not submitted:', newState);
+	};
+
+	const newState = () => {
+		props.onChange({
+			fontFamilyOption: fontFamily,
+			fontSizeOption: fontSize,
+			fontColor,
+			backgroundColor,
+			contentWidth,
+		});
+	};
+
+	const defaulState = () => {
+		props.onChange(defaultArticleState);
+		setFontFamily(defaultArticleState.fontFamilyOption);
+		setFontSize(defaultArticleState.fontSizeOption);
+
+		setFontColor(defaultArticleState.fontColor);
+		setBackgroundColor(defaultArticleState.backgroundColor);
+		setContentWidth(defaultArticleState.contentWidth);
+	};
+
 	return (
 		<>
 			<ArrowButton isOpen={isOpen} onClick={toggleDisplay} />
 			<aside ref={containerRef} className={containerStyle} id='sidebar'>
-				<form className={styles.form}>
-					<Text as='h2' size={31} weight={800} uppercase dynamicLite>
+				<form className={styles.form} onSubmit={handleSubmit}>
+					<Text as='h2' size={31} weight={800} uppercase>
 						Задайте параметры
 					</Text>
 					<Select
@@ -84,20 +115,21 @@ export const ArticleParamsForm = () => {
 						title='ширина контента'></Select>
 
 					<div className={styles.bottomContainer}>
-						<Button title='Сбросить' htmlType='reset' type='clear' />
-						<Button title='Применить' htmlType='submit' type='apply' />
+						<Button
+							title='Сбросить'
+							htmlType='reset'
+							type='clear'
+							onClick={defaulState}
+						/>
+						<Button
+							title='Применить'
+							htmlType='submit'
+							type='apply'
+							onClick={newState}
+						/>
 					</div>
 				</form>
 			</aside>
 		</>
 	);
 };
-//type SelectProps = {
-//selected: OptionType | null;
-//	options: OptionType[];
-//placeholder?: string;
-//	onChange?: (selected: OptionType) => void;
-//onClose?: () => void;
-//	title?: string;
-//};
-//<RadioGroup selected={selected} name='radio' onChange={setSelected} options={options} title='Название радиогруппы'/>
