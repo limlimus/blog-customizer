@@ -42,7 +42,6 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps) => {
 	const [contentWidth, setContentWidth] = useState(
 		defaultArticleState.contentWidth
 	);
-
 	const toggleDisplay = () => {
 		setIsOpen(!isOpen);
 	};
